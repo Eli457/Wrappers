@@ -1,10 +1,15 @@
 import CMC
 
-names = CMC.CmcApi().list_of_currency()
+call = CMC.CmcApi()
 
-values = CMC.CmcApi().exchange_usd()
+names = call.list_of_currency()
 
-for n, r in zip(names, values):
-    print('The cryptocurrency {} is currently valued at {} USD.'.format(n, r))
+values = call.exchange_usd()
+
+call.print()
+
+call.graph()
+
+
 
 
