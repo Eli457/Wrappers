@@ -74,7 +74,7 @@ class CmcApi:
         plt.xticks(rotation=90)
 
         plt.show()
-        pass
+        
 
 
 
