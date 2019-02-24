@@ -1,5 +1,4 @@
-API_KEY = ''
-URL = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?'
+API_KEY = '7196e9a0-67a0-4828-9de0-2896edc4ba11'
 USER = ''
 PASSWORD = ''
 EMAIL = ''

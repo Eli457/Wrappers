@@ -1,15 +1,16 @@
-import CMC
+from CMC import CoinMarketCap
+from settings import *
 
-call = CMC.CmcApi()
+call = CoinMarketCap(API_KEY)
 
-names = call.list_of_currency()
+#names = call.list_of_currency()
 
-values = call.exchange_usd()
+#values = call.exchange_usd()
 
-call.print()
+#call.print()
 
-call.graph()
+#call.graph_on()
 
+tt = call.graph_tt()
 
-
-
+print(tt)

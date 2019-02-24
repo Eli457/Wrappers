@@ -1,34 +1,32 @@
-from settings import *
-import urllib3
-import json
+import requests
 import matplotlib.pyplot as plt
 from matplotlib import style
 style.use('ggplot')
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class CmcApi:
+class CoinMarketCap:
 
-    def __init__(self):
+    def __init__(self, key):
 
-        self.url = URL + 'CMC_PRO_API_KEY=' + API_KEY
-        self.api_key = API_KEY
-        self.call = None
+        self.url = "https://pro-api.coinmarketcap.com"
+        self.api_key = key
 
-    def call_api(self):
+    def _call_api(self, cate, path, ver='v1'):
         """Returns the json object of the api call """
-        return json.loads(urllib3.PoolManager().request('GET', self.url).data.decode('UTF-8'))
+        call = self.url + '/' + ver + '/' + cate + '/' + path + '?' + 'CMC_PRO_API_KEY=' + self.api_key
+        r = requests.get(call)
+        return r.json()
 
     def list_of_currency(self):
         """Returns the names of all of the cryptocurrencies from
             oldest to newest
         """
-        if self.call is None:
-            self.call = self.call_api()
+
+        call = self._call_api('cryptocurrency', 'listings/latest')
 
         names = []
 
-        for name in self.call['data']:
+        for name in call['data']:
             names.append(name['name'])
 
         return names
@@ -37,12 +35,11 @@ class CmcApi:
         """Returns the current values of all of the cryptocurrencies from
             oldest to newest
         """
-        if self.call is None:
-            self.call = self.call_api()
+        call = self._call_api('cryptocurrency', 'listings/latest')
 
         exchange = []
 
-        data = self.call['data']
+        data = call['data']
         for d in data:
             quote = d['quote']
             usd = quote['USD']
@@ -57,25 +54,61 @@ class CmcApi:
 
         values = self.exchange_usd()
 
-        for n, r in zip(names, values):
-            print('The cryptocurrency {} is currently valued at {} USD.'.format(n, r))
+        for n, v in zip(names, values):
+            print('The cryptocurrency {} is currently valued at {} USD.'.format(n, v))
 
-    def graph(self):
+    def graph_on(self):
         """Creates a scatter plot of names and corresponding values of the
-            cryptocurrencies
+            cryptocurrencies from oldest to newest
         """
-        names = self.list_of_currency()
+        x = self.list_of_currency()
 
-        values = self.exchange_usd()
+        y = self.exchange_usd()
 
-        plt.scatter(names, values)
+        plt.scatter(x, y)
         plt.xlabel('Oldest -> Newest')
         plt.ylabel('Current value(USD)')
         plt.xticks(rotation=90)
 
         plt.show()
-        
 
+    def graph_tt(self, graph=True):
+        """Creates a graph of the top ten cryptocurrencies(optional) and returns
+        a list of top ten"""
+
+        names = self.list_of_currency()
+
+        values = self.exchange_usd()
+
+        comb = []
+
+        for n, v in zip(names, values):
+            comb.append([n, v])
+
+        comb.sort(key=lambda x: x[1])
+        comb.reverse()
+
+        top = []
+        for item in range(10):
+            top.append(comb[item])
+
+        if graph:
+
+            x = []
+            y = []
+
+            for item in top:
+                x.append(item[0])
+                y.append(item[1])
+
+            plt.plot(x, y)
+            plt.xlabel('Top 10')
+            plt.ylabel('Current value(USD)')
+            plt.xticks(rotation=90)
+
+            plt.show()
+
+        return top
 
 
 
