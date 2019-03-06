@@ -3,13 +3,9 @@ from settings import *
 
 call = CoinMarketCap(API_KEY)
 
-#names = call.list_of_currency()
+call.print()
 
-#values = call.exchange_usd()
-
-#call.print()
-
-#call.graph_on()
+# call.graph_on()
 
 tt = call.graph_tt()
 
